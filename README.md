@@ -1,0 +1,2 @@
+# KurskGrad
+Calculator for KurskGrad
