@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="KurskGrad.css" />
+	<title>Blank page</title>
+	<meta charset="utf-8" />
+</head>
+
+<body>
+	<nav class="navbar">
+		<div id="gameTabs">
+			<ul class="navbar-list">
+				<li class="navbar-item">
+					<a id="genTab" class="tab">GENERATE</a>
+					<div id="genTabPop" class="popover">
+						<ul class="popover-list">
+							<li class="popover-item">
+								<a id="wpnGenTab" class="popover-link">WEAPON</a>
+							</li>
+							<li class="popover-item">
+								<a id="charGenTab" class="popover-link">CHARACTER</a>
+							</li>
+							<li class="popover-item">
+								<a id="vehGenTab" class="popover-link">VEHICLE</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li class="navbar-item">
+					<a id="invTab" class="tab">INVENTORY</a>
+					<div id="invTabPop" class="popover">
+						<ul class="popover-list">
+							<li class="popover-item">
+								<a id="wpnInvTab" class="popover-link">STASH</a>
+							</li>
+							<li class="popover-item">
+								<a id="charInvTab" class="popover-link">ROSTER</a>
+							</li>
+							<li class="popover-item">
+								<a id="vehInvTab" class="popover-link">GARAGE</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+<div id="wpnGenContainer" class="gamePage">
+	<div class="container-div">
+		<table id="preselctorTable">
+			<thead>
+				<tr>
+					<th colspan="2">PRE-SELECT</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td colspan="2">
+						<select id="preselector">
+							<option value="ord">Ordnance</option>
+							<option value="hvy">Heavy</option>
+							<option value="basic">Basic</option>
+							<option value="pistol">Pistol</option>
+						</select>
+					</td>
+				</tr>
+				<tr id="ordnancePreselect" class="preselect">
+					<td colspan="2">
+						<select>
+							<option>Battlecannon</option>
+							<option>Punisher Gatling</option>
+							<option>Nova Blaster</option>
+							<option>Plasma Executioner</option>
+						</select>
+					</td>
+				</tr>
+				<tr id="heavyPreselect" class="preselect">
+					<td colspan="2">
+						<select>
+							<option>Lascannon</option>
+							<option>Plasma Cannon</option>
+							<option>Heavy Bolter</option>
+							<option>Heavy Stubber</option>
+						</select>
+					</td>
+				</tr>
+				<tr id="basicPreselect" class="preselect">
+					<td colspan="2">
+						<select>
+							<option>Lasgun</option>
+							<option>Boltgun</option>
+							<option>Autogun</option>
+							<option>Plasma Gun</option>
+						</select>
+					</td>
+				</tr>
+				<tr id="pistolPreselect" class="preselect">
+					<td colspan="2">
+						<select>
+							<option>Laspistol</option>
+							<option>Bolt Pistol</option>
+							<option>Plasma Pistol</option>
+							<option>Stub Gun</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<select>
+							<option>Poor</option>
+							<option selected>Ordinary</option>
+							<option>Fine</option>
+						</select>
+						<input type="button" value="GO!"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>Data</th>
+					<th>Value</th>
+				</tr>
+				<tr>
+					<td>Name: </td>
+					<td class="dpe"></td>
+				</tr>
+				<tr>
+					<td>Type: </td>
+					<td class="dpe"></td>
+				</tr>
+				<tr>
+					<td>Strength: </td>
+					<td class="dpe"></td>
+				</tr>
+				<tr>
+					<td>Die 1: </td>
+					<td class="dpe"></td>
+				</tr>
+				<tr>
+					<td>Die 2: </td>
+					<td class="dpe"></td>
+				</tr>
+				<tr>
+					<td>Range: </td>
+					<td class="dpe"></td>
+				</tr>
+				<tr>
+					<td>Acc &#37;</td>
+					<td class="dpe"></td>
+				</tr>
+				<tr>
+					<td>Acc /in</td>
+					<td class="dpe"></td>
+				</tr>
+				<tr>
+					<td>RoF</td>
+					<td class="dpe"></td>
+				</tr>
+				<tr>
+					<td>Blast</td>
+					<td class="dpe"></td>
+				</tr>
+				<tr>
+					<td>Size</td>
+					<td class="dpe"></td>
+				</tr>
+				<tr>
+					<td>Delay</td>
+					<td class="dpe"></td>
+				</tr>
+				<tr>
+					<td>Ord Rating</td>
+					<td class="dpe"></td>
+				</tr>
+				<tr>
+					<td>Total Cost: </td>
+					<td class="dpe"></td>
+				</tr>
+				<tr>
+					<td>Total Weight: </td>
+					<td class="dpe"></td>
+				</tr>
+				<tr>
+					<td colspan="2"><input type="button" value="BUY!" disabled></input></td>
+			</tbody>
+		</table>
+	</div>	
+	<div class="container-div">
+	<table> <!-- WEAPON CREATION -->
+	<thead>
+		<tr>
+			<th colspan="2">CUSTOM GENERATE</th>
+		</tr>
+	</thead>
+		<tr>
+			<th>Data</th>
+			<th>Value</th>
+		</tr>
+		<tr>
+			<td>Name: </td>
+			<td><input id="wpnName" class="textInput" type="text" value=""></input></td>
+		</tr>
+		<tr>
+			<td>Type: </td>
+			<td>
+				<select id="wpnType">
+					<option value="e">Energy</option>
+					<option value="p">Projectile</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Strength: </td>
+			<td>
+				<select id="wpnStr" class="wpnConst">
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+					<option value="10">10</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Die 1: </td>
+			<td>
+				<select id="wpnDie1" class="wpnConst">
+					<option value="2">2</option>
+					<option value="4">4</option>
+					<option value="6">6</option>
+					<option value="8">8</option>
+					<option value="10">10</option>
+					<option value="12">12</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Die 2: </td>
+			<td>
+				<select id="wpnDie2" class="wpnConst">
+					<option value="2">2</option>
+					<option value="4">4</option>
+					<option value="6">6</option>
+					<option value="8">8</option>
+					<option value="10">10</option>
+					<option value="12">12</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Range: </td>
+			<td>
+				<select id="wpnRng" class="wpnConst">
+					<option value="6">6</option>
+					<option value="12">12</option>
+					<option value="18">18</option>
+					<option value="24" selected>24</option>
+					<option value="30">30</option>
+					<option value="36">36</option>
+					<option value="48">48</option>
+					<option value="60">60</option>
+					<option value="72">72</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Acc &#37;: </td>
+			<td>
+				<select id="wpnAccX" class="wpnConst">
+					<option value="1" selected>1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Acc /in: </td>
+			<td>
+				<select id="wpnAccY" class="wpnConst">
+					<option value="1" selected>1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>RoF: </td>
+			<td>
+				<select id="wpnRoF" class="wpnConst">
+					<option value="0" selected>Single</option>
+					<option value="1">1 Fire Dice</option>
+					<option value="2">2 Fire Dice</option>
+					<option value="3">3 Fire Dice</option>
+					<option value="4">4 Fire Dice</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Blast: </td>
+			<td>
+				<select id="wpnBR" class="wpnConst">
+					<option value="0" selected>None</option>
+					<option value="1">1" Radius</option>
+					<option value="2">2" Radius</option>
+					<option value="3">3" Radius</option>
+					<option value="4">4" Radius</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Size: </td>
+			<td>
+				<select id="wpnCat" class="wpnConst">
+					<option value="0.33" selected>Ordnance</option>
+					<option value="0.5">Heavy</option>
+					<option value="1">Rifle</option>
+					<option value="2">Pistol</option>
+				</select>
+			</td>
+		</tr>
+		<tr id="delayRow">
+			<td>Delay: </td>
+			<td>
+				<select id="wpnDelay" class="wpnConst">
+					<option value="1" selected>None</option>
+					<option value="0.85">Partial</option>
+					<option value="0.666">Full</option>
+					<option value="0.125">One Shot</option>
+				</select>
+			</td>
+		</tr>
+		<tr id="ordRow">
+			<td>Ord Rating: </td>
+			<td>
+				<select id="wpnOR" class="wpnConst">
+					<option value="2" selected>2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Weight Mod: </td>
+			<td>
+				<select id="wpnWgt" class="wpnConst">
+					<option value="0.25">0.25</option>
+					<option value="0.33">0.33</option>
+					<option value="0.5">0.5</option>
+					<option value="1" selected>1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td id="wpnWarning">&nbsp;</td>
+			<td>
+				<input id="wpnGen" type="button" value="GO!" disabled></input>
+				<input id="wpnBUY" type="button" value="BUY!" disabled></input>
+			</td>
+		</tr>
+		<tr>
+			<td>Total Cost: </td>
+			<td id="totalCost" class="dpe">0</td>
+		</tr>
+		<tr>
+			<td>Total Weight: </td>
+			<td id="totalWgt" class="dpe">0</td>
+		</tr>
+	</table>
+	</div>
+</div>
+
+<div id="charGenContainer" class="gamePage">
+	<div class="container-div">
+	<table> <!-- CHARACTER CREATION -->
+		<tr>
+			<th>Stat</th>
+			<th>Value</th>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<input id="charName" class="textInput" type="text" value=""></input>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<select id="charGen" disabled>
+					<option value="" selected disabled>Buy Char</option>
+					<option value="Leader">Leader 240cc</option>
+					<option value="Engineer">Engineer 160cc</option>
+					<option value="Fighter">Fighter 100cc</option>
+					<option value="Green">Green FREE!</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Name</td>
+			<td id="nameStat" class="dpe"></td>
+		</tr>
+		<tr>
+			<td>Rank</td>
+			<td id="rankStat" class="dpe"></td>
+		</tr>
+		<tr>
+			<td>M</td>
+			<td id="moveStat" class="dpe"></td>
+		</tr>
+		<tr>
+			<td>WS</td>
+			<td id="wsStat" class="dpe"></td>
+		</tr>
+		<tr>
+			<td>BS</td>
+			<td id="bsStat" class="dpe"></td>
+		</tr>
+		<tr>
+			<td>S</td>
+			<td id="sStat" class="dpe"></td>
+		</tr>
+		<tr>
+			<td>T</td>
+			<td id="tStat" class="dpe"></td>
+		</tr>
+		<tr>
+			<td>W</td>
+			<td id="wStat" class="dpe"></td>
+		</tr>
+		<tr>
+			<td>I</td>
+			<td id="iStat" class="dpe"></td>
+		</tr>
+		<tr>
+			<td>A</td>
+			<td id="aStat" class="dpe"></td>
+		</tr>
+		<tr>
+			<td>Ld</td>
+			<td id="ldStat" class="dpe"></td>
+		</tr>
+		<tr>
+			<td>Cost</td>
+			<td id="costStat" class="dpe"></td>
+		</tr>
+		<tr>
+			<td>Weight</td>
+			<td id="weightStat" class="dpe"></td>
+		</tr>
+		<tr>
+			<td>Carry Cap</td>
+			<td id="carryStat" class="dpe"></td>
+		</tr>
+		<tr>
+			<td>Start XP</td>
+			<td id="xpStat" class="dpe"></td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td><input id="charBUY" type="button" value="BUY!" disabled></td>
+		</tr>
+	</table>
+	</div>
+</div>
+	
+<div id="vehGenContainer" class="gamePage">
+	<div class="container-div">
+	<table> <!-- VEHICLE CREATION -->
+		<tr>
+			<th>
+				<input id="vehName" class="textInput" type="text" value=""></input>
+			</th>
+			<th>Front</th>
+			<th>Left</th>
+			<th>Right</th>
+			<th>Rear</th>
+			<th>Roof</th>
+		</tr>
+		<tr>
+			<th>Object 1</th>
+			<td><!-- FRONT -->
+				<select id="vehEng">
+					<option value="" selected disabled>Engine</option>
+					<option value="30000">30,000</option>
+					<option value="60000">60,000</option>
+					<option value="90000">90,000</option>
+					<option value="120000">120,000</option>
+					<option value="150000">150,000</option>
+					<option value="180000">180,000</option>
+					<option value="210000">210,000</option>
+					<option value="240000">240,000</option>
+					<option value="270000">270,000</option>
+					<option value="300000">300,000</option>
+				</select>
+			</td>
+			<td><!-- LEFT -->
+				<select id="leftLoco" class="vehLoco">
+					<option value="" selected disabled>Loco</option>
+					<option value="track">Tracked</option>
+					<option value="wheeled">Wheeled</option>
+				</select>
+			</td>
+			<td><!-- RIGHT -->
+				<select id="rightLoco" class="vehLoco">
+					<option value="" selected disabled>Loco</option>
+					<option value="track">Tracked</option>
+					<option value="wheeled">Wheeled</option>
+				</select>
+			</td>
+			<td><!-- REAR -->
+				<select id="rearPanel">
+					<option value="">&nbsp;</option>
+					<option value="hatch">Hatch</option>
+				</select>
+			</td>
+			<td><!-- ROOF -->
+				<select id="roofMount">
+					<option value="">&nbsp;</option>
+					<option value="lt">L Turret</option>
+					<option value="ht">H Turret</option>
+					<option value="fm">Fixed Mount</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th>Object 2</th>
+			<td class="dpe">Driver</td><!-- FRONT -->
+			<td><!-- LEFT -->
+				<select id="leftPanel">
+					<option value="">&nbsp;</option>
+					<option value="hatch">Hatch</option>
+					<option value="sponson">Sponson</option>
+				</select>
+			</td>
+			<td><!-- RIGHT -->
+				<select id="rightPanel">
+					<option value="">&nbsp;</option>
+					<option value="hatch">Hatch</option>
+					<option value="sponson">Sponson</option>
+				</select>
+			</td>
+			<td id="rearPintleSelector" class="dpe">
+				<select id="rearPintle" class="initHide">
+					<option value=""></option>
+					<option value="1">Pintle</option>
+				</select>
+			</td><!-- REAR -->
+			<td><!-- ROOF -->
+				<select id="roofCupola">
+					<option value=""></option>
+					<option value="cupola">Cupola</option>
+					<option value="1">Pintle</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th>Object 3</th>
+			<td class="dpe">&nbsp;</td><!-- FRONT -->
+			<td id="leftPintleSelector" class="dpe"><!-- LEFT -->
+				<select id="leftPintle" class="initHide">
+					<option value=""></option>
+					<option value="1">Pintle</option>
+				</select>
+			</td>
+			<td id="rightPintleSelector" class="dpe"><!-- RIGHT -->
+				<select id="rightPintle" class="initHide">
+					<option value=""></option>
+					<option value="1">Pintle</option>
+				</select>
+			</td>
+			<td class="dpe">&nbsp;</td><!-- REAR -->
+			<td id="hatchSelector"><!-- ROOF -->
+				<select id="roofHatch">
+					<option value="">&nbsp;</option>
+					<option value="hatch">Hatch</option>
+					<option value="1">1 Pintle</option>
+					<option value="2">2 Pintle</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th>Object 4</th>
+			<td class="dpe">&nbsp;</td><!-- FRONT -->
+			<td class="dpe">&nbsp;</td><!-- LEFT -->
+			<td class="dpe">&nbsp;</td><!-- RIGHT -->
+			<td class="dpe">&nbsp;</td><!-- REAR -->
+			<td id="roofPintleFacingSelector" class="dpe">
+				<select id="roofPintleFacing" class="initHide">
+					<option value="front" selected>Front</option>
+					<option value="rear">Rear</option>
+					<option value="left">Left</option>
+					<option value="right">Right</option>
+				</select>
+			</td><!-- ROOF -->
+		</tr>
+		<tr>
+			<th>Object 5</th>
+			<td class="dpe">&nbsp;</td><!-- FRONT -->
+			<td class="dpe">&nbsp;</td><!-- LEFT -->
+			<td class="dpe">&nbsp;</td><!-- RIGHT -->
+			<td class="dpe">&nbsp;</td><!-- REAR -->
+			<td class="dpe">
+				<span id="roofPintleSecondFacing" class="initHide">Rear</span>
+			</td><!-- ROOF -->
+		</tr>
+		<tr>
+			<th>Arm Vs E: </th>
+			<td>
+				<select id="frontArmVsE">
+					<option value="4">4</option>
+					<option value="8">8</option>
+					<option value="12">12</option>
+					<option value="16">16</option>
+					<option value="20">20</option>
+				</select>
+			</td>
+			<td>
+				<select id="leftArmVsE">
+					<option value="4">4</option>
+					<option value="8">8</option>
+					<option value="12">12</option>
+					<option value="16">16</option>
+					<option value="20">20</option>
+				</select>
+			</td>
+			<td>
+				<select id="rightArmVsE">
+					<option value="4">4</option>
+					<option value="8">8</option>
+					<option value="12">12</option>
+					<option value="16">16</option>
+					<option value="20">20</option>
+				</select>
+			</td>
+			<td>
+				<select id="rearArmVsE">
+					<option value="4">4</option>
+					<option value="8">8</option>
+					<option value="12">12</option>
+					<option value="16">16</option>
+					<option value="20">20</option>
+				</select>
+			</td>
+			<td>
+				<select id="roofArmVsE" class="initHide">
+					<option value="4">4</option>
+					<option value="8">8</option>
+					<option value="12">12</option>
+					<option value="16">16</option>
+					<option value="20">20</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th>Arm Vs P: </th>
+			<td>
+				<select id="frontArmVsP">
+					<option value="4">4</option>
+					<option value="8">8</option>
+					<option value="12">12</option>
+					<option value="16">16</option>
+					<option value="20">20</option>
+				</select>
+			</td>
+			<td>
+				<select id="leftArmVsP">
+					<option value="4">4</option>
+					<option value="8">8</option>
+					<option value="12">12</option>
+					<option value="16">16</option>
+					<option value="20">20</option>
+				</select>
+			</td>
+			<td>
+				<select id="rightArmVsP">
+					<option value="4">4</option>
+					<option value="8">8</option>
+					<option value="12">12</option>
+					<option value="16">16</option>
+					<option value="20">20</option>
+				</select>
+			</td>
+			<td>
+				<select id="rearArmVsP">
+					<option value="4">4</option>
+					<option value="8">8</option>
+					<option value="12">12</option>
+					<option value="16">16</option>
+					<option value="20">20</option>
+				</select>
+			</td>
+			<td>
+				<select id="roofArmVsP" class="initHide">
+					<option value="4">4</option>
+					<option value="8">8</option>
+					<option value="12">12</option>
+					<option value="16">16</option>
+					<option value="20">20</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th>Thickness: </th>
+			<td>
+				<select id="frontArmT">
+					<option value="2">Thin</option>
+					<option value="3">Light</option>
+					<option value="4">Medium</option>
+					<option value="5">Heavy</option>
+					<option value="6">Thick</option>
+				</select>
+				<td>
+				<select id="leftArmT">
+					<option value="2">Thin</option>
+					<option value="3">Light</option>
+					<option value="4">Medium</option>
+					<option value="5">Heavy</option>
+					<option value="6">Thick</option>
+				</select>
+			</td>
+			<td>
+				<select id="rightArmT">
+					<option value="2">Thin</option>
+					<option value="3">Light</option>
+					<option value="4">Medium</option>
+					<option value="5">Heavy</option>
+					<option value="6">Thick</option>
+				</select>
+			</td>
+			<td>
+				<select id="rearArmT">
+					<option value="2">Thin</option>
+					<option value="3">Light</option>
+					<option value="4">Medium</option>
+					<option value="5">Heavy</option>
+					<option value="6">Thick</option>
+				</select>
+			</td>
+			<td>
+				<select id="roofArmT" class="initHide">
+					<option value="2">Thin</option>
+					<option value="3">Light</option>
+					<option value="4">Medium</option>
+					<option value="5">Heavy</option>
+					<option value="6">Thick</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th>Armour: </th>
+			<td id="frontArmName"></td>
+			<td id="leftArmName"></td>
+			<td id="rightArmName"></td>
+			<td id="rearArmName"></td>
+			<td id="roofArmName"></td>
+		</tr>
+		<tr>
+			<th>HP: </th>
+			<td id="frontArmHP"></td>
+			<td id="leftArmHP"></td>
+			<td id="rightArmHP"></td>
+			<td id="rearArmHP"></td>
+			<td id="roofArmHP"></td>
+		</tr>
+		<tr>
+			<th>Weight: </th>
+			<td id="vehTotalWeight"></td>
+			<th>Cost: </th>
+			<td id="vehTotalCost"></td>
+			<th>Speed: </th>
+			<td id="vehTotalSpeed"></td>
+		</tr>
+		<tr>
+			<th>Req. Crew: </th>
+			<td id="vehTotalCrew"></td>
+			<th>Pass. Space: </th>
+			<td id="vehTotalPass"></td>
+			<td colspan="2">
+				<input id="vehGen" type="button" value="CALCULATE!" disabled></input>
+				<input id="vehBUY" type="button" value="BUY!" disabled></input>
+			</td>
+		</tr>
+	</table>
+	</div>
+</div>
+
+<div id="wpnInvContainer" class="gamePage">
+	<div class="container-div">
+		<table id="wpnStorage">
+			<tr>
+				<th>Name</th>
+				<th>Size</th>
+				<th>Str</th>
+				<th>Die</th>
+				<th>Range</th>
+				<th>Wgt</th>
+				<th>Cost</th>
+				<th>Info</th>
+			</tr>
+		</table>
+	</div>
+	<div id="wpnInfoContainer" class="infoContainer">
+	
+	</div>
+</div>
+
+<div id="charInvContainer" class="gamePage">
+	<div class="container-div">
+		<table id="charStorage">
+			<tr>
+				<th>Name</th>
+				<th>Rank</th>
+				<th>M</th>
+				<th>WS</th>
+				<th>BS</th>
+				<th>S</th>
+				<th>T</th>
+				<th>W</th>
+				<th>I</th>
+				<th>A</th>
+				<th>Ld</th>
+				<th>Info</th>
+			</tr>
+		</table>
+	</div>
+	<div id="charInfoContainer" class="infoContainer">
+	
+	</div>
+</div>
+
+<div id="vehInvContainer" class="gamePage">
+	<div class="container-div">
+		<table id="vehicleStorage">
+			<tr>
+				<th>Name</th>
+				<th>Speed</th>
+				<th>Weight</th>
+				<th>Crew Required</th>
+				<th>Passengers</th>
+				<th>Cost</th>
+				<th>Info</th>
+			</tr>
+		</table>
+	</div>
+	<div id="vehInfoContainer" class="infoContainer">
+	
+	</div>
+</div>
+	<script type="text/javascript" src="resources/jquery-2.2.0.min.js"></script>
+	<script type="text/javascript" src="KurskGrad.js"></script>
+</body>
+</html>
