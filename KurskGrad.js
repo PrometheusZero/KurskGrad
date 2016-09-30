@@ -160,6 +160,9 @@ var gens = {
 			}
 		}
 		return null;
+	},
+	toTrueCase: function(str){
+		return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 	}
 };
 
@@ -365,7 +368,7 @@ var character = function(chr){
 	};
 	this.encumbrance = function(){
 		if(this.inventoryWeight() > this.carryCapacity()){
-			return (this.inventoryWeight() / this.carryCapacity())
+			return (this.inventoryWeight() / this.carryCapacity());
 		}else{
 			return 1;
 		}
@@ -383,6 +386,13 @@ var vehicle = function(veh){
 	this.root.passengers = [];
 	this.root.weight = 1000;
 	this.root.cost = 200;
+	this.root.loco = function(){
+		if(veh.leftLoco === veh.rightLoco){
+			return veh.leftLoco;
+		}else{
+			return "Error!";
+		}
+	};
 	
 	this.total = {};
 	this.total.speed = function(){
@@ -474,6 +484,8 @@ var vehicle = function(veh){
 	this.front.status = {};
 	this.front.status.armourBroken = false;
 	this.front.status.hasWeapon = false;
+	this.front.status.hasGunner = false;
+	this.front.status.gunnerObject = {};
 	
 	this.front.objects = {};
 	this.front.objects.object1 = {};
@@ -586,6 +598,8 @@ var vehicle = function(veh){
 	};
 	this.left.status = {};
 	this.left.status.hasWeapon = false;
+	this.left.status.hasGunner = false;
+	this.left.status.gunnerObject = {};
 	this.left.status.sponson = {};
 	this.left.status.sponson.hasSponson = veh.leftHasSponson;
 	this.left.status.sponson.cost = function(){
@@ -736,6 +750,8 @@ var vehicle = function(veh){
 	};
 	this.right.status = {};
 	this.right.status.hasWeapon = false;
+	this.right.status.hasGunner = false;
+	this.right.status.gunnerObject = {};
 	this.right.status.sponson = {};
 	this.right.status.sponson.hasSponson = veh.rightHasSponson;
 	this.right.status.sponson.cost = function(){
@@ -880,6 +896,8 @@ var vehicle = function(veh){
 	};
 	this.rear.status = {};
 	this.rear.status.hasWeapon = false;
+	this.rear.status.hasGunner = false;
+	this.rear.status.gunnerObject = {};
 	this.rear.status.pintle = {};
 	this.rear.status.pintle.hasPintle = veh.rearHasPintle;
 	this.rear.status.pintle.cost = function(){
@@ -1108,6 +1126,8 @@ var vehicle = function(veh){
 	};
 	this.roof.status.primaryWeapon = {};
 	this.roof.status.primaryWeapon.hasPrimaryWeapon = false;
+	this.roof.status.primaryWeapon.hasGunner = false;
+	this.roof.status.primaryWeapon.gunnerObject = {};
 	this.roof.status.primaryWeapon.damage = 0;
 
 	this.roof.status.cupola = {};
@@ -1267,7 +1287,6 @@ var vehicle = function(veh){
 //////////
 
 var setters = {
-	name:"setters",
 	//TAKE USER INPUTS AND RUN WERAPON CONSTRUCTOR
 	wpnSet:$('#wpnGen').click(function(){
 		//populate object with user inputs
@@ -1573,7 +1592,6 @@ var setters = {
 ////////////////
 
 var domUpdate = {
-	name:"domUpdate",
 	//UPDATES/ADDS TO INVENTORY -> STASH WEAPON TABLE
 	invWeapon:function(){
 		$('.wpnItem').remove();
@@ -1683,11 +1701,11 @@ var domUpdate = {
 		stringBuilder += '</td></tr>';
 		//add armour line only if equipped
 		if(thisChar.isArmourEquipped === true){
-			stringBuilder += '<tr><td>Armour: </td><td id="' + thisChar.charID + '_charInfo_equipArmour">' + thisChar.armourEquip.name + '</td></tr>'
+			stringBuilder += '<tr><td>Armour: </td><td id="' + thisChar.charID + '_charInfo_equipArmour">' + thisChar.armourEquip.name + '</td></tr>';
 		}
 		//add energy shield only if equipped
 		if(thisChar.isEnergyShieldEquipped === true){
-			stringBuilder += '<tr><td>Shield: </td><td id="' + thisChar.charID + '_charInfo_equipShield">' + thisChar.energyShieldEquip.name + '</td></tr>'
+			stringBuilder += '<tr><td>Shield: </td><td id="' + thisChar.charID + '_charInfo_equipShield">' + thisChar.energyShieldEquip.name + '</td></tr>';
 		}
 		//inventory section built and left blank (if this is to be dynamic it needs the if section that adding items has).
 		stringBuilder += '<tr><td colspan="2">&nbsp;</td></tr>';
@@ -1716,45 +1734,65 @@ var domUpdate = {
 		var id = thisVeh.root.id;
 		var stringBuilder = "";
 		stringBuilder += '<table id="' + id + '_vehInfo" class="infoPage">';
+		//next row
 		stringBuilder += '<tr><th colspan="5">' + thisVeh.root.name + '</th></tr>';
-		
+		//next row
 		stringBuilder += '<tr>';
 		stringBuilder += '<td>Total Cost: </td><td id="' + id + '_vehInfo_totVal">' + thisVeh.total.cost() + '</td>';
 		stringBuilder += '<td>Driver: </td><td id="' + id + '_vehInfo_driverName">No Driver</td>';
 		stringBuilder += '<td><input id="' + id + '_vehInfo_driverAssign" class="vehInfo_driverAssign" type="button" value="ASSIGN"></input></td>';
 		stringBuilder += '</tr>';
-		
+		//next row
 		stringBuilder += '<tr>';
 		stringBuilder += '<td>Total Weight: </td><td id="' + id + '_vehInfo_totWgt">' + thisVeh.total.weight() + '</td>';
 		stringBuilder += '<td>Passengers: </td><td id="' + id + '_vehInfo_pass">' + thisVeh.root.passengers.length + '/' + thisVeh.total.passengerCapacity() + '</td>';
 		stringBuilder += '<td><input id="' + id + '_vehInfo_passengerAssign" class="vehInfo_passengerAssign" type="button" value="ADD!"></input></td>';
 		stringBuilder += '</tr>';
-		
+		//next row
 		stringBuilder += '<tr>';
 		stringBuilder += '<td>Total Speed: </td><td id="' + id + '_vehInfo_totSpd">' + thisVeh.total.speed() + '</td>';
-		stringBuilder += '<td colspan="3"></td>';
+		stringBuilder += '<td>Locomotion: </td><td id="' + id + '_vehInfo_loco">' + gens.toTrueCase(thisVeh.root.loco()) + '</td>';
+		stringBuilder += '<td></td>';
 		stringBuilder += '</tr>';
-		
-		stringBuilder += '<tr><td colspan="4">&nbsp;</td></tr>';
-		
-		stringBuilder += '<tr><th>Front</th><th>Left</th><th>Right</th><th>Rear</th></tr>';
-		
+		//next row
+		stringBuilder += '<tr><td colspan="5">&nbsp;</td></tr>';
+		//next row
+		stringBuilder += '<tr><th>Front</th><th>Left</th><th>Right</th><th>Rear</th>';
+		if(thisVeh.roof.status.lightTurret.hasLightTurret === true || thisVeh.roof.status.heavyTurret.hasHeavyTurret === true || thisVeh.roof.status.fixedMount.hasFixedMount === true){
+			stringBuilder += '<th>Roof</th>';
+		}else{
+			stringBuilder += '<th></th>';
+		}
+		stringBuilder += '</tr>';
+		//next row
 		stringBuilder += '<tr>';
 		stringBuilder += '<td id="' + id + '_vehInfo_frontArmName">' + thisVeh.front.armour.name() + '</td>';
 		stringBuilder += '<td id="' + id + '_vehInfo_leftArmName">' + thisVeh.left.armour.name() + '</td>';
 		stringBuilder += '<td id="' + id + '_vehInfo_rightArmName">' + thisVeh.right.armour.name() + '</td>';
 		stringBuilder += '<td id="' + id + '_vehInfo_rearArmName">' + thisVeh.rear.armour.name() + '</td>';
+		if(thisVeh.roof.status.lightTurret.hasLightTurret === true || thisVeh.roof.status.heavyTurret.hasHeavyTurret === true || thisVeh.roof.status.fixedMount.hasFixedMount === true){
+			stringBuilder += '<td id="' + id + '_vehInfo_roofArmName">' + thisVeh.roof.armour.name() + '</td>';
+		}else{
+			stringBuilder += '<td id="' + id + '_vehInfo_roofArmName"></td>';
+		}
 		stringBuilder += '</tr>';
-		
+		//next row
 		stringBuilder += '<tr>';
 		stringBuilder += '<td id="' + id + '_vehInfo_frontArmInfo">' + thisVeh.front.armour.vsE + 'vsE/' + thisVeh.front.armour.vsP + 'vsP ' + thisVeh.front.armour.hp() + 'HP</td>';
 		stringBuilder += '<td id="' + id + '_vehInfo_leftArmInfo">' + thisVeh.left.armour.vsE + 'vsE/' + thisVeh.left.armour.vsP + 'vsP ' + thisVeh.left.armour.hp() + 'HP</td>';
 		stringBuilder += '<td id="' + id + '_vehInfo_rightArmInfo">' + thisVeh.right.armour.vsE + 'vsE/' + thisVeh.right.armour.vsP + 'vsP ' + thisVeh.right.armour.hp() + 'HP</td>';
 		stringBuilder += '<td id="' + id + '_vehInfo_rearArmInfo">' + thisVeh.rear.armour.vsE + 'vsE/' + thisVeh.rear.armour.vsP + 'vsP ' + thisVeh.rear.armour.hp() + 'HP</td>';
+		if(thisVeh.roof.status.lightTurret.hasLightTurret === true || thisVeh.roof.status.heavyTurret.hasHeavyTurret === true || thisVeh.roof.status.fixedMount.hasFixedMount === true){
+			stringBuilder += '<td id="' + id + '_vehInfo_roofArmInfo">' + thisVeh.roof.armour.vsE + 'vsE/' + thisVeh.roof.armour.vsP + 'vsP ' + thisVeh.roof.armour.hp() + 'HP</td>';
+		}else{
+			stringBuilder += '<td id="' + id + '_vehInfo_roofArmInfo"></td>';
+		}
 		stringBuilder += '</tr>';
-		
+		//next row
 		stringBuilder += '<tr>';
+			//td 1
 		stringBuilder += '<td id="' + id + '_vehInfo_frontHardpoint">Front Hardpoint</td>';
+			//td2
 		stringBuilder += '<td id="' + id + '_vehInfo_leftStatus">';
 		if(thisVeh.left.status.sponson.hasSponson === true){
 			stringBuilder += 'Sponson Hardpoint';
@@ -1764,6 +1802,7 @@ var domUpdate = {
 			stringBuilder += 'No Hardpoint';
 		}
 		stringBuilder += '</td>';
+			//td3
 		stringBuilder += '<td id="' + id + '_vehInfo_rightStatus">';
 		if(thisVeh.right.status.sponson.hasSponson === true){
 			stringBuilder += 'Sponson Hardpoint';
@@ -1773,6 +1812,7 @@ var domUpdate = {
 			stringBuilder += 'No Hardpoint';
 		}
 		stringBuilder += '</td>';
+			//td4
 		stringBuilder += '<td id="' + id + '_vehInfo_rearStatus">';
 		if(thisVeh.rear.status.pintle.hasPintle === true){
 			stringBuilder += 'Pintle Hardpoint';
@@ -1780,46 +1820,151 @@ var domUpdate = {
 			stringBuilder += 'No Hardpoint';
 		}
 		stringBuilder += '</td>';
+			//td5
+		stringBuilder += '<td id="' + id + '_vehInfo_roofStatus">';
+		if(thisVeh.roof.status.lightTurret.hasLightTurret === true){
+			stringBuilder += 'L.Turret Hardpoint';
+		}else if(thisVeh.roof.status.heavyTurret.hasHeavyTurret === true){
+			stringBuilder += 'H.Turret Hardpoint';
+		}else if(thisVeh.roof.status.fixedMount.hasFixedMount === true){
+			stringBuilder += 'Fixed Mount Hardpoint';
+		}else{
+			stringBuilder += 'No Primary Hardpoint';
+		}
+		stringBuilder += '</td>';
 		stringBuilder += '</tr>';
-		
+		//next row
 		stringBuilder += '<tr>';
+			//td1
 		stringBuilder += '<td id="' + id + '_vehInfo_frontWeapon">No Weapon</td>';
+			//td2
 		stringBuilder += '<td id="' + id + '_vehInfo_leftWeapon">';
 		if(thisVeh.left.status.sponson.hasSponson === true || thisVeh.left.status.pintle.hasPintle === true){
 			stringBuilder += 'No Weapon';
 		}
 		stringBuilder += '</td>';
+			//td3
 		stringBuilder += '<td id="' + id + '_vehInfo_rightWeapon">';
 		if(thisVeh.right.status.sponson.hasSponson === true || thisVeh.right.status.pintle.hasPintle === true){
 			stringBuilder += 'No Weapon';
 		}
 		stringBuilder += '</td>';
+			//td4
 		stringBuilder += '<td id="' + id + '_vehInfo_rearWeapon">';
 		if(thisVeh.rear.status.pintle.hasPintle === true){
 			stringBuilder += 'No Weapon';
 		}
 		stringBuilder += '</td>';
+			//td5
+		stringBuilder += '<td id="' + id + '_vehInfo_roofPrimaryWeapon">';
+		if(thisVeh.roof.status.lightTurret.hasLightTurret === true || thisVeh.roof.status.heavyTurret.hasHeavyTurret === true || thisVeh.roof.status.fixedMount.hasFixedMount === true){
+			stringBuilder += 'No Weapon';
+		}
+		stringBuilder += '</td>';
 		stringBuilder += '</tr>';
-		
+		//next row
 		stringBuilder += '<tr>';
+			//td1
 		stringBuilder += '<td><input id="' + id + '_vehInfo_frontWpnAssign" class="vehInfo_frontWpnAssign" type="button" value="ATTACH!"></input></td>';
+			//td2
 		stringBuilder += '<td id="' + id + '_vehInfo_leftAttach">';
 		if(thisVeh.left.status.sponson.hasSponson === true || thisVeh.left.status.pintle.hasPintle === true){
 			stringBuilder += '<input id="' + id + '_vehInfo_leftWpnAssign" class="vehInfo_leftWpnAssign" type="button" value="ATTACH!"></input>';
 		}
 		stringBuilder += '</td>';
+			//td3
 		stringBuilder += '<td id="' + id + '_vehInfo_rightAttach">';
 		if(thisVeh.right.status.sponson.hasSponson === true || thisVeh.right.status.pintle.hasPintle === true){
 			stringBuilder += '<input id="' + id + '_vehInfo_rightWpnAssign" class="vehInfo_rightWpnAssign" type="button" value="ATTACH!"></input>';
 		}
 		stringBuilder += '</td>';
+			//td4
 		stringBuilder += '<td id="' + id + '_vehInfo_rearAttach">';
 		if(thisVeh.rear.status.pintle.hasPintle === true){
 			stringBuilder += '<input id="' + id + '_vehInfo_rearWpnAssign" class="vehInfo_rearWpnAssign" type="button" value="ATTACH!"></input>';
 		}
 		stringBuilder += '</td>';
+			//td5
+		stringBuilder += '<td id="' + id + '_vehInfo_roofPrimaryAttach">';
+		if(thisVeh.roof.status.lightTurret.hasLightTurret === true || thisVeh.roof.status.heavyTurret.hasHeavyTurret === true || thisVeh.roof.status.fixedMount.hasFixedMount === true){
+			stringBuilder += '<input id="' + id + '_vehInfo_roofPrimaryAssign" class="vehInfo_roofPrimaryAssign" type="button" value="ATTACH!"></input>';
+		}
 		stringBuilder += '</tr>';
-		
+		//next row
+		stringBuilder += '<tr>';
+			//td1
+		stringBuilder += '<td id="' + id + '_vehInfo_frontGunner">';
+		if(thisVeh.front.status.hasWeapon === true && thisVeh.front.status.hasGunner === true){
+			stringBuilder += thisVeh.front.status.gunnerObject.name;
+		}else if(thisVeh.front.status.hasWeapon === true){
+			stringBuilder += 'No Gunner';
+		}
+		stringBuilder += '</td>';
+			//td2
+		stringBuilder += '<td id="' + id + '_vehInfo_leftGunner">';
+		if(thisVeh.left.status.hasWeapon === true && thisVeh.left.status.hasGunner === true){
+			stringBuilder += thisVeh.left.status.gunnerObject.name;
+		}else if(thisVeh.left.status.hasWeapon === true){
+			stringBuilder += 'No Gunner';
+		}
+		stringBuilder += '</td>';
+			//td3
+		stringBuilder += '<td id="' + id + '_vehInfo_rightGunner">';
+		if(thisVeh.right.status.hasWeapon === true && thisVeh.right.status.hasGunner === true){
+			stringBuilder += thisVeh.right.status.gunnerObject.name;
+		}else if(thisVeh.right.status.hasWeapon === true){
+			stringBuilder += 'No Gunner';
+		}
+		stringBuilder += '</td>';
+			//td4
+		stringBuilder += '<td id="' + id + '_vehInfo_rearGunner">';
+		if(thisVeh.rear.status.hasWeapon === true && thisVeh.rear.status.hasGunner === true){
+			stringBuilder += thisVeh.rear.status.gunnerObject.name;
+		}else if(thisVeh.rear.status.hasWeapon === true){
+			stringBuilder += 'No Gunner';
+		}
+		stringBuilder += '</td>';
+			//td5
+		stringBuilder += '<td id="' + id + '_vehInfo_roofPrimaryGunner">';
+		if(thisVeh.roof.status.primaryWeapon.hasPrimaryWeapon === true && thisVeh.roof.status.primaryWeapon.hasGunner === true){
+			stringBuilder += thisVeh.roof.status.primaryWeapon.gunnerObject.name;
+		}else if(thisVeh.roof.status.primaryWeapon.hasPrimaryWeapon === true){
+			stringBuilder += 'No Gunner';
+		}
+		stringBuilder += '</td>';
+		stringBuilder += '</tr>';
+		//next row
+		stringBuilder += '<tr>';
+			//td1
+		stringBuilder += '<td id="' + id + '_vehInfo_frontGunnerAttach">';
+		if(thisVeh.front.status.hasWeapon === true){
+			stringBuilder += '<td><input id="' + id + '_vehInfo_frontGunnerAssign" class="vehInfo_frontGunnerAssign" type="button" value="ASSIGN!"></input></td>';
+		}
+		stringBuilder += '</td>';
+			//td2
+		stringBuilder += '<td id="' + id + '_vehInfo_leftGunnerAttach">';
+		if(thisVeh.left.status.hasWeapon === true){
+			stringBuilder += '<td><input id="' + id + '_vehInfo_leftGunnerAssign" class="vehInfo_leftGunnerAssign" type="button" value="ASSIGN!"></input></td>';
+		}
+		stringBuilder += '</td>';
+			//td3
+		stringBuilder += '<td id="' + id + '_vehInfo_rightGunnerAttach">';
+		if(thisVeh.right.status.hasWeapon === true){
+			stringBuilder += '<td><input id="' + id + '_vehInfo_rightGunnerAssign" class="vehInfo_rightGunnerAssign" type="button" value="ASSIGN!"></input></td>';
+		}
+		stringBuilder += '</td>';
+			//td4
+		stringBuilder += '<td id="' + id + '_vehInfo_rearGunnerAttach">';
+		if(thisVeh.rear.status.hasWeapon === true){
+			stringBuilder += '<td><input id="' + id + '_vehInfo_rearGunnerAssign" class="vehInfo_rearGunnerAssign" type="button" value="ASSIGN!"></input></td>';
+		}
+		stringBuilder += '</td>';
+			//td5
+		stringBuilder += '<td id="' + id + '_vehInfo_roofPrimaryGunnerAttach">';
+		if(thisVeh.roof.status.primaryWeapon.hasPrimaryWeapon === true){
+			stringBuilder += '<td><input id="' + id + '_vehInfo_roofPrimaryGunnerAssign" class="vehInfo_roofPrimaryGunnerAssign" type="button" value="ASSIGN!"></input></td>';
+		}
+		stringBuilder += '</td>';
 		stringBuilder += '</table>';
 		$('#vehInfoContainer').append(stringBuilder);
 	},
@@ -2018,9 +2163,11 @@ var domUpdate = {
 //VEH:	ATTACH WEAPON TO LEFT HARDPOINT vehInfo_leftWpnAssign
 //VEH:	ATTACH WEAPON TO RIGHT HARDPOINT vehInfo_rightWpnAssign
 //VEH:	ATTACH WEAPON TO REAR HARPOINT vehInfo_rearWpnAssign
+//VEH:	ATTACH WEAPON TO ROOF PRIMARY HARDPOINT vehInfo_roofPrimaryAssign
 //
+//THESE ARE ADDED TO wpnInfoContainer, charInfoContainer, vehInfoContainer
 var assignment = {
-	name:"assignment",
+	
 	//Should probably put an 'if' in here so assigned weapons cant be assigned twice at once!
 	openWpnAssign:$('#wpnInfoContainer').on('click', '.assignBtn', function(){
 		var thisWpnID = parseInt($(this).prop('id'));
