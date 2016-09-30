@@ -31,6 +31,26 @@ var commonObjects = {
 		weight: 100,
 		crewRequired: 1,
 		passengerCapacity: -1
+	},
+	ordnance: {
+		battlecannon: {
+			ordinary: {
+				name: "Battlecannon",
+				type: "p",
+				strength: 8,
+				die1: 8,
+				die2: 8,
+				delay: 1,
+				ordRat: 2,
+				cat: 0.33,
+				range: 72,
+				accx: 2,
+				accY: 1,
+				rof: 0,
+				blast: 2,
+				weightMod: 1,
+			}
+		}
 	}
 };
 
@@ -180,7 +200,7 @@ var weapon = function(wpn){
 	this.delay = wpn.delay;
 	this.ordnanceRating = wpn.ordRat;
 	this.category = wpn.cat;
-	this.categoryName = wpn.catName;
+	this.categoryName = gens.catName(this.category);
 	this.range = wpn.range;
 	this.accX = wpn.accX;
 	this.accY = wpn.accY;
@@ -271,14 +291,14 @@ var weapon = function(wpn){
 	this.equipStatus.isEquipped = false;
 	this.equipStatus.object = {};
 	this.equipStatus.carriedBy = function(){
-		var result = "basic";
+		var result = "";
 		if(this.isCarried === false){
-			result =  "isCarriedIsFalse";
+			result =  "";
 		}else{
 			if($.isNumeric(this.object.charID)){
 				result = this.object.name;
 			}else{
-				result = "no object.charID";
+				result = "";
 			}
 		}
 		return result;
@@ -287,7 +307,7 @@ var weapon = function(wpn){
 		if(this.isCarried === false){
 			return "";
 		}else{
-			if(this.object.root){
+			if($.isNumeric(this.object.root.id)){
 				return this.object.root.name;
 			}else{
 				return "";
@@ -304,7 +324,9 @@ var character = function(chr){
 	this.name = chr.name;
 	this.rank = chr.rank;
 	this.movement = function(){
-		return Math.ceil( (Math.sqrt(this.strength) + Math.sqrt(this.toughness))/this.encumbrance );
+		var result = 0;
+		result = Math.ceil( (Math.sqrt(this.strength) + Math.sqrt(this.toughness))/this.encumbrance() );
+		return result;
 	};
 	this.weaponSkill = chr.ws;
 	this.ballisticSkill = chr.bs;
@@ -1661,24 +1683,32 @@ var domUpdate = {
 	infoCharacter:function(thisChar){
 		var stringBuilder = "";
 		stringBuilder += '<table id="' + thisChar.charID + '_charInfo" class="infoPage">';
+		stringBuilder += '</table>';
+		$('#charInfoContainer').append(stringBuilder);
+		
+		domUpdate.infoCharContents(thisChar);
+	},
+	infoCharContent: function(thisChar){
+		var id = thisChar.charID;
+		var stringBuilder = '';
 		stringBuilder += '<tr><th colspan="2">' + thisChar.name + '</th></tr>';
-		stringBuilder += '<tr><td>Rank: </td><td id="' + thisChar.charID + '_charInfo_rank">' + thisChar.rank + '</td></tr>';
-		stringBuilder += '<tr><td>Move: </td><td id="' + thisChar.charID + '_charInfo_move">' + thisChar.movement() + '</td></tr>';
-		stringBuilder += '<tr><td>Weapon Skill: </td><td id="' + thisChar.charID + '_charInfo_ws">' + thisChar.weaponSkill + '</td></tr>';
-		stringBuilder += '<tr><td>Ballistic Skill: </td><td id="' + thisChar.charID + '_charInfo_bs">' + thisChar.ballisticSkill + '</td></tr>';
-		stringBuilder += '<tr><td>Strength: </td><td id="' + thisChar.charID + '_charInfo_s">' + thisChar.strength + '</td></tr>';
-		stringBuilder += '<tr><td>Toughness: </td><td id="' + thisChar.charID + '_charInfo_t">' + thisChar.toughness + '</td></tr>';
-		stringBuilder += '<tr><td>Wounds: </td><td id="' + thisChar.charID + '_charInfo_w">' + thisChar.wounds() + '</td></tr>';
-		stringBuilder += '<tr><td>Initiative: </td><td id="' + thisChar.charID + '_charInfo_i">' + thisChar.initiative + '</td></tr>';
-		stringBuilder += '<tr><td>Attacks: </td><td id="' + thisChar.charID + '_charInfo_a">' + thisChar.attacks() + '</td></tr>';
-		stringBuilder += '<tr><td>Leadership: </td><td id="' + thisChar.charID + '_charInfo_ld">' + thisChar.leadership + '</td></tr>';
+		stringBuilder += '<tr><td>Rank: </td><td id="' + id + '_charInfo_rank">' + thisChar.rank + '</td></tr>';
+		stringBuilder += '<tr><td>Move: </td><td id="' + id + '_charInfo_move">' + thisChar.movement() + '</td></tr>';
+		stringBuilder += '<tr><td>Weapon Skill: </td><td id="' + id + '_charInfo_ws">' + thisChar.weaponSkill + '</td></tr>';
+		stringBuilder += '<tr><td>Ballistic Skill: </td><td id="' + id + '_charInfo_bs">' + thisChar.ballisticSkill + '</td></tr>';
+		stringBuilder += '<tr><td>Strength: </td><td id="' + id + '_charInfo_s">' + thisChar.strength + '</td></tr>';
+		stringBuilder += '<tr><td>Toughness: </td><td id="' + id + '_charInfo_t">' + thisChar.toughness + '</td></tr>';
+		stringBuilder += '<tr><td>Wounds: </td><td id="' + id + '_charInfo_w">' + thisChar.wounds() + '</td></tr>';
+		stringBuilder += '<tr><td>Initiative: </td><td id="' + id + '_charInfo_i">' + thisChar.initiative + '</td></tr>';
+		stringBuilder += '<tr><td>Attacks: </td><td id="' + id + '_charInfo_a">' + thisChar.attacks() + '</td></tr>';
+		stringBuilder += '<tr><td>Leadership: </td><td id="' + id + '_charInfo_ld">' + thisChar.leadership + '</td></tr>';
 		stringBuilder += '<tr><td colspan="2">&nbsp;</td></tr>';
-		stringBuilder += '<tr><td>Experience: </td><td id="' + thisChar.charID + '_charInfo_xp">' + thisChar.experience + '</td></tr>';
-		stringBuilder += '<tr><td>Encumbrance: </td><td id="' + thisChar.charID + '_charInfo_enc">' + thisChar.inventoryWeight() + '/' + thisChar.carryCapacity() + '</td></tr>';
-		stringBuilder += '<tr><td>Total Weight: </td><td id="' + thisChar.charID + '_charInfo_totWgt">' + thisChar.totalWeight() + '</td></tr>';
-		stringBuilder += '<tr><td>Total Value: </td><td id="' + thisChar.charID + '_charInfo_totVal">' + thisChar.totalValue() + '</td></tr>';
+		stringBuilder += '<tr><td>Experience: </td><td id="' + id + '_charInfo_xp">' + thisChar.experience + '</td></tr>';
+		stringBuilder += '<tr><td>Encumbrance: </td><td id="' + id + '_charInfo_enc">' + thisChar.inventoryWeight() + '/' + thisChar.carryCapacity() + '</td></tr>';
+		stringBuilder += '<tr><td>Total Weight: </td><td id="' + id + '_charInfo_totWgt">' + thisChar.totalWeight() + '</td></tr>';
+		stringBuilder += '<tr><td>Total Value: </td><td id="' + id + '_charInfo_totVal">' + thisChar.totalValue() + '</td></tr>';
 		//add equip left line, fill only if left is equipped
-		stringBuilder += '<tr><td>Equip Left: </td><td id="' + thisChar.charID + '_charInfo_equipLeft">';
+		stringBuilder += '<tr><td>Equip Left: </td><td id="' + id + '_charInfo_equipLeft">';
 		if(thisChar.isLeftHandEquipped === true){
 			stringBuilder += thisChar.leftHandEquip.name;
 		}else if(thisChar.isBothHandEquipped === true){
@@ -1686,7 +1716,7 @@ var domUpdate = {
 		}
 		stringBuilder += '</td></tr>';
 		//add equip right line, fill only if right is equipped
-		stringBuilder += '<tr><td>Equip Right: </td><td id="' + thisChar.charID + '_charInfo_equipRight">';
+		stringBuilder += '<tr><td>Equip Right: </td><td id="' + id + '_charInfo_equipRight">';
 		if(thisChar.isRightHandEquipped === true){
 			stringBuilder += thisChar.rightHandEquip.name;
 		}else if(thisChar.isBothHandEquipped === true){
@@ -1694,24 +1724,26 @@ var domUpdate = {
 		}
 		stringBuilder += '</td></tr>';
 		//add both line, fill only if both is equipped
-		stringBuilder += '<tr><td>Equip Both: </td><td id="' + thisChar.charID + '_charInfo_equipBoth">';
+		stringBuilder += '<tr><td>Equip Both: </td><td id="' + id + '_charInfo_equipBoth">';
 		if(thisChar.isBothHandEquipped === true){
 			stringBuilder += thisChar.bothHandEquip.name;
 		}
 		stringBuilder += '</td></tr>';
 		//add armour line only if equipped
 		if(thisChar.isArmourEquipped === true){
-			stringBuilder += '<tr><td>Armour: </td><td id="' + thisChar.charID + '_charInfo_equipArmour">' + thisChar.armourEquip.name + '</td></tr>';
+			stringBuilder += '<tr><td>Armour: </td><td id="' + id + '_charInfo_equipArmour">' + thisChar.armourEquip.name + '</td></tr>';
 		}
 		//add energy shield only if equipped
 		if(thisChar.isEnergyShieldEquipped === true){
-			stringBuilder += '<tr><td>Shield: </td><td id="' + thisChar.charID + '_charInfo_equipShield">' + thisChar.energyShieldEquip.name + '</td></tr>';
+			stringBuilder += '<tr><td>Shield: </td><td id="' + id + '_charInfo_equipShield">' + thisChar.energyShieldEquip.name + '</td></tr>';
 		}
 		//inventory section built and left blank (if this is to be dynamic it needs the if section that adding items has).
 		stringBuilder += '<tr><td colspan="2">&nbsp;</td></tr>';
-		stringBuilder += '<tr><td>Inventory: </td><td><input id="' + thisChar.wpnID + '_charInfo_addToInv" class="charInfo_addToInv" type="button" value="ADD"></input></td></tr>';
-		stringBuilder += '</table>';
-		$('#charInfoContainer').append(stringBuilder);
+		stringBuilder += '<tr><td>Inventory: </td><td><input id="' + id + '_charInfo_addToInv" class="charInfo_addToInv" type="button" value="ADD"></input></td></tr>';
+		for(let i=0;i<thisChar.inventory.length;i++){
+			stringBuilder += '<tr><td>' + thisChar.inventory[i].name + '</td><td>' + thisChar.inventory[i].totalWeight() + '</td></tr>';
+		}
+		$('#' + id + '_charInfo').html(stringBuilder);
 	},
 	//UPDATES/ADDS TO INVENTORY -> GARAGE VEHICLE TABLE
 	invVehicle:function(){
@@ -1734,7 +1766,15 @@ var domUpdate = {
 		var id = thisVeh.root.id;
 		var stringBuilder = "";
 		stringBuilder += '<table id="' + id + '_vehInfo" class="infoPage">';
-		//next row
+		stringBuilder += '</table>';
+		$('#vehInfoContainer').append(stringBuilder);
+		
+		domUpdate.infoVehicleContent(thisVeh);
+	},
+	infoVehicleContent:function(thisVeh){
+		var id = thisVeh.root.id;
+		var stringBuilder = "";
+		
 		stringBuilder += '<tr><th colspan="5">' + thisVeh.root.name + '</th></tr>';
 		//next row
 		stringBuilder += '<tr>';
@@ -1965,8 +2005,8 @@ var domUpdate = {
 			stringBuilder += '<td><input id="' + id + '_vehInfo_roofPrimaryGunnerAssign" class="vehInfo_roofPrimaryGunnerAssign" type="button" value="ASSIGN!"></input></td>';
 		}
 		stringBuilder += '</td>';
-		stringBuilder += '</table>';
-		$('#vehInfoContainer').append(stringBuilder);
+		
+		$('#' + id + '_vehInfo').html(stringBuilder);
 	},
 	wpnToBuy:function(){
 		var theCost = temporary.weapons[0].totalCost();
@@ -2167,9 +2207,51 @@ var domUpdate = {
 //
 //THESE ARE ADDED TO wpnInfoContainer, charInfoContainer, vehInfoContainer
 var assignment = {
-	
+	openAddWpnToCharInv:$('#charInfoContainer').on('click', '.charInfo_addToInv', function(){
+		var thisCharID = parseInt($(this).prop('id'));
+		if($('.addWpnToCharInv')){
+			$('.addWpnToCharInv').remove();
+		}
+		for(let i=0;i<data.weapons.length;i++){
+			if(data.characters[thisCharID].rank !== 'Green'){	
+				if(data.weapons[i].category !== 0.33 && data.weapons[i].equipStatus.isCarried === false){
+					var stringBuilder = '';
+					stringBuilder += '<tr id="' + data.weapons[i].wpnID + '_addWpnToCharInv" class="addWpnToCharInv dpe">';
+					stringBuilder += '<td>' + data.weapons[i].name + '</td>';
+					stringBuilder += '<td>' + data.weapons[i].totalWeight() + '</td>';
+					stringBuilder += '</tr>';
+					$('#' + thisCharID + '_charInfo').append(stringBuilder);
+				}
+			}else{
+				if((data.weapons[i].category === 1 || data.weapons[i].category === 2) && data.weapons[i].equipStatus.isCarried === false){
+					var stringBuilder = '';
+					stringBuilder += '<tr id="' + data.weapons[i].wpnID + '_addWpnToCharInv" class="addWpnToCharInv dpe">';
+					stringBuilder += '<td>' + data.weapons[i].name + '</td>';
+					stringBuilder += '<td>' + data.weapons[i].totalWeight() + '</td>';
+					stringBuilder += '</tr>';
+					$('#' + thisCharID + '_charInfo').append(stringBuilder);
+				}
+			}
+		}
+	}),
+	addWpnToCharInv:$('#charInfoContainer').on('click', '.addWpnToCharInv', function(){
+		var thisWpnID = parseInt($(this).prop('id'));
+		var thisCharID = parseInt($(this).parent().prop('id'));
+		var thisChar = gens.findChar(thisCharID);
+		var thisWpn = gens.findWpn(thisWpnID);
+		thisChar.inventory.push(thisWpn);
+		thisWpn.equipStatus.isCarried = true;
+		thisWpn.equipStatus.object = thisChar;
+		$('#' + thisWpnID + '_wpnCarriedBy').text(thisWpn.equipStatus.carriedBy());
+		
+		$('.addWpnToCharInv').remove();
+		domUpdate.infoCharContent(thisChar);
+	}),
+	openAssignDriverToVehicle:$('#vehInfoContainer').on('click', '.vehInfo_passengerAssign', function(){
+		
+	}),
 	//Should probably put an 'if' in here so assigned weapons cant be assigned twice at once!
-	openWpnAssign:$('#wpnInfoContainer').on('click', '.assignBtn', function(){
+/*	openWpnAssign:$('#wpnInfoContainer').on('click', '.assignBtn', function(){
 		var thisWpnID = parseInt($(this).prop('id'));
 		for(let i=0;i<data.characters.length;i++){
 			var stringBuilder = '';
@@ -2210,7 +2292,7 @@ var assignment = {
 		thisWpn.equipStatus.object = thisChar;
 		$('#' + wpnID + '_wpnCarriedBy').text(thisWpn.equipStatus.carriedBy());
 		
-	}),
+	}),		*/
 	openVehDriverAssign:$('#vehInfoContainer').on('click', '.assignBtn', function(){
 		var thisVehID = parseInt($(this).prop('id'));
 		console.log('Open Vehicle Assignment - to write!');
