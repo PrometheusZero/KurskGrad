@@ -1497,7 +1497,7 @@ var setters = {
 		temporary.vehicles = [];
 		domUpdate.vehReset();
 	}),
-	//GIANT FUNCTION, NEEDS BREAKING DOWN
+	//TAKES USER INPUTS AND RUN CHARACTER CONSTRUCTOR
 	charSet:$('#charGen').change(function(){
 		var chr = {};
 		chr.name = $('#charName').val();
@@ -1552,6 +1552,7 @@ var setters = {
 			domUpdate.charToBuy.green();
 		}
 	}),
+	//THE BUY PROCESS. TAKE TEMPORARY OBJECT AND PUSH TO DB. CALL DOM UPDATER FOR INVENTORY AND INFO.
 	charBuy:$('#charBUY').click(function(){
 		var thisChar = temporary.characters[0];
 		
@@ -1651,7 +1652,7 @@ var domUpdate = {
 		stringBuilder += '<tr><td>Toughness: </td><td id="' + thisChar.charID + '_charInfo_t">' + thisChar.toughness + '</td></tr>';
 		stringBuilder += '<tr><td>Wounds: </td><td id="' + thisChar.charID + '_charInfo_w">' + thisChar.wounds() + '</td></tr>';
 		stringBuilder += '<tr><td>Initiative: </td><td id="' + thisChar.charID + '_charInfo_i">' + thisChar.initiative + '</td></tr>';
-		stringBuilder += '<tr><td>Attacks: </td><td id="' + thisChar.charID + '_charInfoa">' + thisChar.attacks() + '</td></tr>';
+		stringBuilder += '<tr><td>Attacks: </td><td id="' + thisChar.charID + '_charInfo_a">' + thisChar.attacks() + '</td></tr>';
 		stringBuilder += '<tr><td>Leadership: </td><td id="' + thisChar.charID + '_charInfo_ld">' + thisChar.leadership + '</td></tr>';
 		stringBuilder += '<tr><td colspan="2">&nbsp;</td></tr>';
 		stringBuilder += '<tr><td>Experience: </td><td id="' + thisChar.charID + '_charInfo_xp">' + thisChar.experience + '</td></tr>';
@@ -1675,22 +1676,22 @@ var domUpdate = {
 		}
 		stringBuilder += '</td></tr>';
 		//add both line, fill only if both is equipped
-		stringBuilder += '<tr><td>Equip Both: </td><td id="' + thisChar.charID + '">';
+		stringBuilder += '<tr><td>Equip Both: </td><td id="' + thisChar.charID + '_charInfo_equipBoth">';
 		if(thisChar.isBothHandEquipped === true){
 			stringBuilder += thisChar.bothHandEquip.name;
 		}
 		stringBuilder += '</td></tr>';
 		//add armour line only if equipped
 		if(thisChar.isArmourEquipped === true){
-			stringBuilder += '<tr><td>Armour: </td><td id="' + thisChar.charID + '">' + thisChar.armourEquip.name + '</td></tr>'
+			stringBuilder += '<tr><td>Armour: </td><td id="' + thisChar.charID + '_charInfo_equipArmour">' + thisChar.armourEquip.name + '</td></tr>'
 		}
 		//add energy shield only if equipped
 		if(thisChar.isEnergyShieldEquipped === true){
-			stringBuilder += '<tr><td>Shield: </td><td id="' + thisChar.charID + '">' + thisChar.energyShieldEquip.name + '</td></tr>'
+			stringBuilder += '<tr><td>Shield: </td><td id="' + thisChar.charID + '_charInfo_equipShield">' + thisChar.energyShieldEquip.name + '</td></tr>'
 		}
 		//inventory section built and left blank (if this is to be dynamic it needs the if section that adding items has).
 		stringBuilder += '<tr><td colspan="2">&nbsp;</td></tr>';
-		stringBuilder += '<tr><td colspan="2">Inventory: </td></tr>';
+		stringBuilder += '<tr><td>Inventory: </td><td><input id="' + thisChar.wpnID + '_charInfo_addToInv" class="charInfo_addToInv" type="button" value="ADD"></input></td></tr>';
 		stringBuilder += '</table>';
 		$('#charInfoContainer').append(stringBuilder);
 	},
@@ -1715,22 +1716,23 @@ var domUpdate = {
 		var id = thisVeh.root.id;
 		var stringBuilder = "";
 		stringBuilder += '<table id="' + id + '_vehInfo" class="infoPage">';
-		stringBuilder += '<tr><th colspan="4">' + thisVeh.root.name + '</th></tr>';
+		stringBuilder += '<tr><th colspan="5">' + thisVeh.root.name + '</th></tr>';
+		
+		stringBuilder += '<tr>';
+		stringBuilder += '<td>Total Cost: </td><td id="' + id + '_vehInfo_totVal">' + thisVeh.total.cost() + '</td>';
+		stringBuilder += '<td>Driver: </td><td id="' + id + '_vehInfo_driverName">No Driver</td>';
+		stringBuilder += '<td><input id="' + id + '_vehInfo_driverAssign" class="vehInfo_driverAssign" type="button" value="ASSIGN"></input></td>';
+		stringBuilder += '</tr>';
 		
 		stringBuilder += '<tr>';
 		stringBuilder += '<td>Total Weight: </td><td id="' + id + '_vehInfo_totWgt">' + thisVeh.total.weight() + '</td>';
-		stringBuilder += '<td>Total Cost: </td><td id="' + id + '_vehInfo_totVal">' + thisVeh.total.cost() + '</td>';
+		stringBuilder += '<td>Passengers: </td><td id="' + id + '_vehInfo_pass">' + thisVeh.root.passengers.length + '/' + thisVeh.total.passengerCapacity() + '</td>';
+		stringBuilder += '<td><input id="' + id + '_vehInfo_passengerAssign" class="vehInfo_passengerAssign" type="button" value="ADD!"></input></td>';
 		stringBuilder += '</tr>';
 		
 		stringBuilder += '<tr>';
 		stringBuilder += '<td>Total Speed: </td><td id="' + id + '_vehInfo_totSpd">' + thisVeh.total.speed() + '</td>';
-		stringBuilder += '<td>Passengers: </td><td id="' + id + '_vehInfo_pass">' + thisVeh.root.passengers.length + '/' + thisVeh.total.passengerCapacity() + '</td>';
-		stringBuilder += '</tr>';
-		
-		stringBuilder += '<tr>';
-		stringBuilder += '<td>Driver: </td>';
-		stringBuilder += '<td colspan="2" id="' + id + '_vehInfo_driverName">No Driver</td>';
-		stringBuilder += '<td><input id="' + id + '_vehInfo_driverAssign" class="assignBtn" type="button" value="ASSIGN!"></input></td>';
+		stringBuilder += '<td colspan="3"></td>';
 		stringBuilder += '</tr>';
 		
 		stringBuilder += '<tr><td colspan="4">&nbsp;</td></tr>';
@@ -1800,20 +1802,20 @@ var domUpdate = {
 		stringBuilder += '</tr>';
 		
 		stringBuilder += '<tr>';
-		stringBuilder += '<td><input id="' + id + '_vehInfo_frontWpnAssign" class="assignBtn" type="button" value="ATTACH!"></input></td>';
+		stringBuilder += '<td><input id="' + id + '_vehInfo_frontWpnAssign" class="vehInfo_frontWpnAssign" type="button" value="ATTACH!"></input></td>';
 		stringBuilder += '<td id="' + id + '_vehInfo_leftAttach">';
 		if(thisVeh.left.status.sponson.hasSponson === true || thisVeh.left.status.pintle.hasPintle === true){
-			stringBuilder += '<input id="' + id + '_vehInfo_leftWpnAssign" class="assignBtn" type="button" value="ATTACH!"></input>';
+			stringBuilder += '<input id="' + id + '_vehInfo_leftWpnAssign" class="vehInfo_leftWpnAssign" type="button" value="ATTACH!"></input>';
 		}
 		stringBuilder += '</td>';
 		stringBuilder += '<td id="' + id + '_vehInfo_rightAttach">';
 		if(thisVeh.right.status.sponson.hasSponson === true || thisVeh.right.status.pintle.hasPintle === true){
-			stringBuilder += '<input id="' + id + '_vehInfo_rightWpnAssign" class="assignBtn" type="button" value="ATTACH!"></input>';
+			stringBuilder += '<input id="' + id + '_vehInfo_rightWpnAssign" class="vehInfo_rightWpnAssign" type="button" value="ATTACH!"></input>';
 		}
 		stringBuilder += '</td>';
 		stringBuilder += '<td id="' + id + '_vehInfo_rearAttach">';
 		if(thisVeh.rear.status.pintle.hasPintle === true){
-			stringBuilder += '<input id="' + id + '_vehInfo_rearWpnAssign" class="assignBtn" type="button" value="ATTACH!"></input>';
+			stringBuilder += '<input id="' + id + '_vehInfo_rearWpnAssign" class="vehInfo_rearWpnAssign" type="button" value="ATTACH!"></input>';
 		}
 		stringBuilder += '</td>';
 		stringBuilder += '</tr>';
@@ -2008,6 +2010,15 @@ var domUpdate = {
 //REMOVED ASSIGNMENT FROM WPN INFO
 //TO ADD TO CHAR INVENTORY, CHAR EQUIP FROM INVENTORY
 //VEH ASSIGNMENT FOR BOTH WPN AND CHAR TO BE ADDED
+//ASSIGNMENT BUTTONS ARE WHERE?
+//
+//CHAR:	ADD TO INVENTORY charInfo_addToInv
+//VEH:	ADD DRIVER vehInfo_driverAssign
+//VEH:	ATTACH WEAPON TO FRONT HARDPOINT vehInfo_frontWpnAssign
+//VEH:	ATTACH WEAPON TO LEFT HARDPOINT vehInfo_leftWpnAssign
+//VEH:	ATTACH WEAPON TO RIGHT HARDPOINT vehInfo_rightWpnAssign
+//VEH:	ATTACH WEAPON TO REAR HARPOINT vehInfo_rearWpnAssign
+//
 var assignment = {
 	name:"assignment",
 	//Should probably put an 'if' in here so assigned weapons cant be assigned twice at once!
