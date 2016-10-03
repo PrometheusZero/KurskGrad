@@ -534,6 +534,20 @@ var vehicle = function(veh){
 	this.front.objects.object2.mandatory = true;
 	this.front.objects.object2.name = "driver";
 	this.front.objects.object2.hasDriver = false;
+	this.front.objects.object2.cost = function(){
+		result = 0;
+		if(this.object.name){
+			result += this.object.totalValue();
+		}
+		return result;
+	};
+	this.front.objects.object2.weight = function(){
+		result = 0;
+		if(this.object.name){
+			result += this.object.totalWeight();
+		}
+		return result;
+	};
 	this.front.objects.object2.object = {};
 	
 	this.front.objects.object3 = {};
@@ -1686,7 +1700,7 @@ var domUpdate = {
 		stringBuilder += '</table>';
 		$('#charInfoContainer').append(stringBuilder);
 		
-		domUpdate.infoCharContents(thisChar);
+		domUpdate.infoCharContent(thisChar);
 	},
 	infoCharContent: function(thisChar){
 		var id = thisChar.charID;
@@ -2247,8 +2261,34 @@ var assignment = {
 		$('.addWpnToCharInv').remove();
 		domUpdate.infoCharContent(thisChar);
 	}),
-	openAssignDriverToVehicle:$('#vehInfoContainer').on('click', '.vehInfo_passengerAssign', function(){
-		
+	openAssignDriverToVehicle:$('#vehInfoContainer').on('click', '.vehInfo_driverAssign', function(){
+		console.log('openAssignDriverToVehicle TRIGGERED')
+		var thisVehID = parseInt($(this).prop('id'));
+		if($('#' + thisVehID + '_assignDriverBox')){
+			$('#' + thisVehID + '_assignDriverBox').remove();
+		}
+		$('#vehInfoContainer').append('<table id="' + thisVehID + '_assignDriverBox" class="infoPage"><tr><th colspan="2">Driver Assign</th></tr></table>');
+		$('#'+ thisVehID + '_assignDriverBox').show();
+		for(let i=0;i<data.characters.length;i++){
+			if(data.characters[i].rank !== 'Green'){
+				var stringBuilder = '';
+				stringBuilder += '<tr id="' + data.characters[i].charID + '_assignDriverToVehicle" class="assignDriverToVehicle dpe">';
+				stringBuilder += '<td>' + data.characters[i].name + '</td>';
+				stringBuilder += '<td>' + data.characters[i].rank + '</td>';
+				stringBuilder += '</tr>';
+				$('#' + thisVehID + '_assignDriverBox').append(stringBuilder);
+			}
+		}
+	}),
+	assignDriverToVehicle:$('#vehInfoContainer').on('click', '.assignDriverToVehicle', function(){
+		var thisCharID = parseInt($(this).prop('id'));
+		var thisVehID = parseInt($(this).parent().parent().prop('id'));
+		var thisChar = gens.findChar(thisCharID);
+		var thisVeh = gens.findVeh(thisVehID);
+		thisVeh.front.objects.object2.hasDriver = true;
+		thisVeh.front.objects.object2.object = thisChar;
+		$('#' + thisVehID + '_vehInfo_driverName').text(thisChar.name);
+		$('#' + thisVehID + '_assignDriverBox').remove();
 	}),
 	//Should probably put an 'if' in here so assigned weapons cant be assigned twice at once!
 /*	openWpnAssign:$('#wpnInfoContainer').on('click', '.assignBtn', function(){
