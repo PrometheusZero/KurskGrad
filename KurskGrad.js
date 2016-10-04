@@ -2262,13 +2262,12 @@ var assignment = {
 		domUpdate.infoCharContent(thisChar);
 	}),
 	openAssignDriverToVehicle:$('#vehInfoContainer').on('click', '.vehInfo_driverAssign', function(){
-		console.log('openAssignDriverToVehicle TRIGGERED')
 		var thisVehID = parseInt($(this).prop('id'));
 		if($('#' + thisVehID + '_assignDriverBox')){
 			$('#' + thisVehID + '_assignDriverBox').remove();
 		}
 		$('#vehInfoContainer').append('<table id="' + thisVehID + '_assignDriverBox" class="infoPage"><tr><th colspan="2">Driver Assign</th></tr></table>');
-		$('#'+ thisVehID + '_assignDriverBox').show();
+		$('#' + thisVehID + '_assignDriverBox').show();
 		for(let i=0;i<data.characters.length;i++){
 			if(data.characters[i].rank !== 'Green'){
 				var stringBuilder = '';
@@ -2289,6 +2288,24 @@ var assignment = {
 		thisVeh.front.objects.object2.object = thisChar;
 		$('#' + thisVehID + '_vehInfo_driverName').text(thisChar.name);
 		$('#' + thisVehID + '_assignDriverBox').remove();
+	}),
+	openAssignWeaponToVehicleFrontHardpoint:$('#vehInfoContainer').on('click', '.vehInfo_frontWpnAssign', function(){
+		var thisVehID = parseInt($(this).prop('id'));
+		if($('#' + thisVehID + '_assignFrontWeaponBox')){
+			$('#' + thisVehID + '_assignFrontWeaponBox').remove();
+		}
+		$('#vehInfoContainer').append('<table id="' + thisVehID + '_assignFrontWeaponBox" class="infoPage"><tr><th colspan="2">Front Weapon Assign</th></tr></table>');
+		$('#' + thisVehID + '_assignFrontWeaponBox').show();
+		for(let i=0;i<data.weapons.length;i++){
+			if(data.weapons[i].category === 0.5){
+				var stringBuilder = '';
+				stringBuilder += '<tr id="' + data.weapons[i].wpnID + '_assignWeaponToVehicleFront" class="assignWeaponToVehicleFront dpe">';
+				stringBuilder += '<td>' + data.weapons[i].name + '</td>';
+				stringBuilder += '<td>' + data.weapons[i].totalWeight() + '</td>'
+				stringBuilder += '</tr>';
+				$('#' + thisVehID + '_assignFrontWeaponBox').append(stringBuilder);
+			}
+		}
 	}),
 	//Should probably put an 'if' in here so assigned weapons cant be assigned twice at once!
 /*	openWpnAssign:$('#wpnInfoContainer').on('click', '.assignBtn', function(){
