@@ -333,7 +333,7 @@ var character = function(chr){
 	this.strength = chr.s;
 	this.toughness = chr.t;
 	this.wounds = function(){
-		return Math.ceil(this.initiative/20);
+		return Math.ceil((this.initiative + this.leadership)/20);
 	};
 	this.initiative = chr.i;
 	this.attacks = function(){
@@ -2046,14 +2046,14 @@ var domUpdate = {
 		leader:function(){
 			$('#nameStat').text($('#charName').val());
 			$('#rankStat').text('Leader');
-			$('#moveStat').text('4');
+			$('#moveStat').html('&#8730;(S&sup2;+T&sup2;)');
 			$('#wsStat').text('60 + d6');
 			$('#bsStat').text('60 + d6');
 			$('#sStat').text('3');
 			$('#tStat').text('3');
-			$('#wStat').text('3');
+			$('#wStat').text('(I + Ld)/20');
 			$('#iStat').text('40 + d6');
-			$('#aStat').text('4');
+			$('#aStat').text('(WS+BS)/40');
 			$('#ldStat').text('45 + d6');
 			$('#costStat').text('240');
 			$('#weightStat').text('120');
@@ -2064,14 +2064,14 @@ var domUpdate = {
 		engineer:function(){
 			$('#nameStat').text($('#charName').val());
 			$('#rankStat').text('Engineer');
-			$('#moveStat').text('4');
+			$('#moveStat').html('&#8730;(S&sup2;+T&sup2;)');
 			$('#wsStat').text('40 + d6');
 			$('#bsStat').text('60 + d6');
 			$('#sStat').text('3');
 			$('#tStat').text('2');
-			$('#wStat').text('2');
+			$('#wStat').text('(I + Ld)/20');
 			$('#iStat').text('30 + d6');
-			$('#aStat').text('3');
+			$('#aStat').text('(WS+BS)/40');
 			$('#ldStat').text('20 + d6');
 			$('#costStat').text('160');
 			$('#weightStat').text('105');
@@ -2082,14 +2082,14 @@ var domUpdate = {
 		fighter:function(){
 			$('#nameStat').text($('#charName').val());
 			$('#rankStat').text('Fighter');
-			$('#moveStat').text('3');
+			$('#moveStat').html('&#8730;(S&sup2;+T&sup2;)');
 			$('#wsStat').text('50 + d6');
 			$('#bsStat').text('50 + d6');
 			$('#sStat').text('2');
 			$('#tStat').text('2');
-			$('#wStat').text('2');
+			$('#wStat').text('(I + Ld)/20');
 			$('#iStat').text('20 + d6');
-			$('#aStat').text('3');
+			$('#aStat').text('(WS+BS)/40');
 			$('#ldStat').text('30 + d6');
 			$('#costStat').text('100');
 			$('#weightStat').text('90');
@@ -2100,14 +2100,14 @@ var domUpdate = {
 		green:function(){
 			$('#nameStat').text($('#charName').val());
 			$('#rankStat').text('Green');
-			$('#moveStat').text('2');
+			$('#moveStat').html('&#8730;(S&sup2;+T&sup2;)');
 			$('#wsStat').text('30 + d6');
 			$('#bsStat').text('30 + d6');
 			$('#sStat').text('1');
 			$('#tStat').text('1');
-			$('#wStat').text('2');
+			$('#wStat').text('(I + Ld)/20');
 			$('#iStat').text('20 + d6');
-			$('#aStat').text('2');
+			$('#aStat').text('(WS+BS)/40');
 			$('#ldStat').text('10 + d6');
 			$('#costStat').text('0');
 			$('#weightStat').text('60');
