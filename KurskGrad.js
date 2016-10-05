@@ -34,7 +34,23 @@ var commonObjects = {
 	},
 	ordnance: {
 		battlecannon: {
-			ordinary: {
+			fine: {		//cost: 2133, weight: 1660,
+				name: "Fine Battlecannon",
+				type: "p",
+				strength: 8,
+				die1: 8,
+				die2: 8,
+				delay: 1,
+				ordRat: 2,
+				cat: 0.33,
+				range: 72,
+				accx: 1,
+				accy: 2,
+				rof: 0,
+				blast: 3,
+				weightmod: 2
+			},
+			ordinary: {	//cost: 863, weight:390
 				name: "Battlecannon",
 				type: "p",
 				strength: 8,
@@ -48,9 +64,80 @@ var commonObjects = {
 				accY: 1,
 				rof: 0,
 				blast: 2,
-				weightMod: 1,
+				weightMod: 1
+			},
+			poor: {		//cost:170, weight: 665,
+				name: "Poor Battlecannon",
+				type: "p",
+				strength: 8,
+				die1: 8,
+				die2: 6,
+				delay: 1,
+				ordRat: 4,
+				cat: 0.33,
+				range: 72,
+				accx: 3,
+				accy: 1,
+				rof: 0,
+				blast: 2,
+				weightMod: 2
+			}
+		},
+		punshisher: {
+			ordinary: {	//cost: 845, weight:375
+				name: "Punisher Cannon",
+				type: "p",
+				strength: 6,
+				die1: 6,
+				die2: 6,
+				delay: 1,
+				ordRat: 2;
+				cat: 0.33,
+				range: 36,
+				accx: 1,
+				accy: 1,
+				rof: 3,
+				blast: 0,
+				weightMod: 1
+			}
+		}, 
+			novaBlaster: {
+				ordinary: {	//cost:837, weight:415
+				name: "Nova Blaster",
+				type: "e",
+				strength: 6,
+				die1: 10,
+				die2: 10,
+				delay: 1,
+				ordRat: 2,
+				cat: 0.33,
+				range: 48,
+				accx: 2,
+				accy: 1,
+				rof: 0,
+				blast: 2,
+				weightMod: 1
+			}
+		},
+		plasmaExecutioner: {
+			ordinary: {		//cost: 755, weight: 355
+				name: "Plasma Executioner",
+				type: "e",
+				strength: 7,
+				die1: 8,
+				die2: 8,
+				delay: 1,
+				ordRat: 2,
+				cat: 0.33,
+				range: 36,
+				accx: 1,
+				accy: 1,
+				rof: 1,
+				blast: 1,
+				weightMod: 1
 			}
 		}
+		
 	}
 };
 
@@ -333,7 +420,7 @@ var character = function(chr){
 	this.strength = chr.s;
 	this.toughness = chr.t;
 	this.wounds = function(){
-		return Math.ceil(this.initiative/20);
+		return Math.ceil((this.initiative + this.leadership)/20);
 	};
 	this.initiative = chr.i;
 	this.attacks = function(){
@@ -534,6 +621,20 @@ var vehicle = function(veh){
 	this.front.objects.object2.mandatory = true;
 	this.front.objects.object2.name = "driver";
 	this.front.objects.object2.hasDriver = false;
+	this.front.objects.object2.cost = function(){
+		result = 0;
+		if(this.object.name){
+			result += this.object.totalValue();
+		}
+		return result;
+	};
+	this.front.objects.object2.weight = function(){
+		result = 0;
+		if(this.object.name){
+			result += this.object.totalWeight();
+		}
+		return result;
+	};
 	this.front.objects.object2.object = {};
 	
 	this.front.objects.object3 = {};
@@ -1686,7 +1787,7 @@ var domUpdate = {
 		stringBuilder += '</table>';
 		$('#charInfoContainer').append(stringBuilder);
 		
-		domUpdate.infoCharContents(thisChar);
+		domUpdate.infoCharContent(thisChar);
 	},
 	infoCharContent: function(thisChar){
 		var id = thisChar.charID;
@@ -2032,14 +2133,14 @@ var domUpdate = {
 		leader:function(){
 			$('#nameStat').text($('#charName').val());
 			$('#rankStat').text('Leader');
-			$('#moveStat').text('4');
+			$('#moveStat').html('&#8730;(S&sup2;+T&sup2;)');
 			$('#wsStat').text('60 + d6');
 			$('#bsStat').text('60 + d6');
 			$('#sStat').text('3');
 			$('#tStat').text('3');
-			$('#wStat').text('3');
+			$('#wStat').text('(I + Ld)/20');
 			$('#iStat').text('40 + d6');
-			$('#aStat').text('4');
+			$('#aStat').text('(WS+BS)/40');
 			$('#ldStat').text('45 + d6');
 			$('#costStat').text('240');
 			$('#weightStat').text('120');
@@ -2050,14 +2151,14 @@ var domUpdate = {
 		engineer:function(){
 			$('#nameStat').text($('#charName').val());
 			$('#rankStat').text('Engineer');
-			$('#moveStat').text('4');
+			$('#moveStat').html('&#8730;(S&sup2;+T&sup2;)');
 			$('#wsStat').text('40 + d6');
 			$('#bsStat').text('60 + d6');
 			$('#sStat').text('3');
 			$('#tStat').text('2');
-			$('#wStat').text('2');
+			$('#wStat').text('(I + Ld)/20');
 			$('#iStat').text('30 + d6');
-			$('#aStat').text('3');
+			$('#aStat').text('(WS+BS)/40');
 			$('#ldStat').text('20 + d6');
 			$('#costStat').text('160');
 			$('#weightStat').text('105');
@@ -2068,14 +2169,14 @@ var domUpdate = {
 		fighter:function(){
 			$('#nameStat').text($('#charName').val());
 			$('#rankStat').text('Fighter');
-			$('#moveStat').text('3');
+			$('#moveStat').html('&#8730;(S&sup2;+T&sup2;)');
 			$('#wsStat').text('50 + d6');
 			$('#bsStat').text('50 + d6');
 			$('#sStat').text('2');
 			$('#tStat').text('2');
-			$('#wStat').text('2');
+			$('#wStat').text('(I + Ld)/20');
 			$('#iStat').text('20 + d6');
-			$('#aStat').text('3');
+			$('#aStat').text('(WS+BS)/40');
 			$('#ldStat').text('30 + d6');
 			$('#costStat').text('100');
 			$('#weightStat').text('90');
@@ -2086,14 +2187,14 @@ var domUpdate = {
 		green:function(){
 			$('#nameStat').text($('#charName').val());
 			$('#rankStat').text('Green');
-			$('#moveStat').text('2');
+			$('#moveStat').html('&#8730;(S&sup2;+T&sup2;)');
 			$('#wsStat').text('30 + d6');
 			$('#bsStat').text('30 + d6');
 			$('#sStat').text('1');
 			$('#tStat').text('1');
-			$('#wStat').text('2');
+			$('#wStat').text('(I + Ld)/20');
 			$('#iStat').text('20 + d6');
-			$('#aStat').text('2');
+			$('#aStat').text('(WS+BS)/40');
 			$('#ldStat').text('10 + d6');
 			$('#costStat').text('0');
 			$('#weightStat').text('60');
@@ -2247,8 +2348,51 @@ var assignment = {
 		$('.addWpnToCharInv').remove();
 		domUpdate.infoCharContent(thisChar);
 	}),
-	openAssignDriverToVehicle:$('#vehInfoContainer').on('click', '.vehInfo_passengerAssign', function(){
-		
+	openAssignDriverToVehicle:$('#vehInfoContainer').on('click', '.vehInfo_driverAssign', function(){
+		var thisVehID = parseInt($(this).prop('id'));
+		if($('#' + thisVehID + '_assignDriverBox')){
+			$('#' + thisVehID + '_assignDriverBox').remove();
+		}
+		$('#vehInfoContainer').append('<table id="' + thisVehID + '_assignDriverBox" class="infoPage"><tr><th colspan="2">Driver Assign</th></tr></table>');
+		$('#' + thisVehID + '_assignDriverBox').show();
+		for(let i=0;i<data.characters.length;i++){
+			if(data.characters[i].rank !== 'Green'){
+				var stringBuilder = '';
+				stringBuilder += '<tr id="' + data.characters[i].charID + '_assignDriverToVehicle" class="assignDriverToVehicle dpe">';
+				stringBuilder += '<td>' + data.characters[i].name + '</td>';
+				stringBuilder += '<td>' + data.characters[i].rank + '</td>';
+				stringBuilder += '</tr>';
+				$('#' + thisVehID + '_assignDriverBox').append(stringBuilder);
+			}
+		}
+	}),
+	assignDriverToVehicle:$('#vehInfoContainer').on('click', '.assignDriverToVehicle', function(){
+		var thisCharID = parseInt($(this).prop('id'));
+		var thisVehID = parseInt($(this).parent().parent().prop('id'));
+		var thisChar = gens.findChar(thisCharID);
+		var thisVeh = gens.findVeh(thisVehID);
+		thisVeh.front.objects.object2.hasDriver = true;
+		thisVeh.front.objects.object2.object = thisChar;
+		$('#' + thisVehID + '_vehInfo_driverName').text(thisChar.name);
+		$('#' + thisVehID + '_assignDriverBox').remove();
+	}),
+	openAssignWeaponToVehicleFrontHardpoint:$('#vehInfoContainer').on('click', '.vehInfo_frontWpnAssign', function(){
+		var thisVehID = parseInt($(this).prop('id'));
+		if($('#' + thisVehID + '_assignFrontWeaponBox')){
+			$('#' + thisVehID + '_assignFrontWeaponBox').remove();
+		}
+		$('#vehInfoContainer').append('<table id="' + thisVehID + '_assignFrontWeaponBox" class="infoPage"><tr><th colspan="2">Front Weapon Assign</th></tr></table>');
+		$('#' + thisVehID + '_assignFrontWeaponBox').show();
+		for(let i=0;i<data.weapons.length;i++){
+			if(data.weapons[i].category === 0.5){
+				var stringBuilder = '';
+				stringBuilder += '<tr id="' + data.weapons[i].wpnID + '_assignWeaponToVehicleFront" class="assignWeaponToVehicleFront dpe">';
+				stringBuilder += '<td>' + data.weapons[i].name + '</td>';
+				stringBuilder += '<td>' + data.weapons[i].totalWeight() + '</td>'
+				stringBuilder += '</tr>';
+				$('#' + thisVehID + '_assignFrontWeaponBox').append(stringBuilder);
+			}
+		}
 	}),
 	//Should probably put an 'if' in here so assigned weapons cant be assigned twice at once!
 /*	openWpnAssign:$('#wpnInfoContainer').on('click', '.assignBtn', function(){
