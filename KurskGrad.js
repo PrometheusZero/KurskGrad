@@ -34,7 +34,23 @@ var commonObjects = {
 	},
 	ordnance: {
 		battlecannon: {
-			ordinary: {
+			fine: {		//cost: 2133, weight: 1660,
+				name: "Fine Battlecannon",
+				type: "p",
+				strength: 8,
+				die1: 8,
+				die2: 8,
+				delay: 1,
+				ordRat: 2,
+				cat: 0.33,
+				range: 72,
+				accx: 1,
+				accy: 2,
+				rof: 0,
+				blast: 3,
+				weightmod: 2
+			},
+			ordinary: {	//cost: 863, weight:390
 				name: "Battlecannon",
 				type: "p",
 				strength: 8,
@@ -48,9 +64,80 @@ var commonObjects = {
 				accY: 1,
 				rof: 0,
 				blast: 2,
-				weightMod: 1,
+				weightMod: 1
+			},
+			poor: {		//cost:170, weight: 665,
+				name: "Poor Battlecannon",
+				type: "p",
+				strength: 8,
+				die1: 8,
+				die2: 6,
+				delay: 1,
+				ordRat: 4,
+				cat: 0.33,
+				range: 72,
+				accx: 3,
+				accy: 1,
+				rof: 0,
+				blast: 2,
+				weightMod: 2
+			}
+		},
+		punshisher: {
+			ordinary: {	//cost: 845, weight:375
+				name: "Punisher Cannon",
+				type: "p",
+				strength: 6,
+				die1: 6,
+				die2: 6,
+				delay: 1,
+				ordRat: 2;
+				cat: 0.33,
+				range: 36,
+				accx: 1,
+				accy: 1,
+				rof: 3,
+				blast: 0,
+				weightMod: 1
+			}
+		}, 
+			novaBlaster: {
+				ordinary: {	//cost:837, weight:415
+				name: "Nova Blaster",
+				type: "e",
+				strength: 6,
+				die1: 10,
+				die2: 10,
+				delay: 1,
+				ordRat: 2,
+				cat: 0.33,
+				range: 48,
+				accx: 2,
+				accy: 1,
+				rof: 0,
+				blast: 2,
+				weightMod: 1
+			}
+		},
+		plasmaExecutioner: {
+			ordinary: {		//cost: 755, weight: 355
+				name: "Plasma Executioner",
+				type: "e",
+				strength: 7,
+				die1: 8,
+				die2: 8,
+				delay: 1,
+				ordRat: 2,
+				cat: 0.33,
+				range: 36,
+				accx: 1,
+				accy: 1,
+				rof: 1,
+				blast: 1,
+				weightMod: 1
 			}
 		}
+		
 	}
 };
 
